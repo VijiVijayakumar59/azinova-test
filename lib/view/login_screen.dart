@@ -1,5 +1,5 @@
 import 'package:azinovatest/constants/constant_height.dart';
-import 'package:azinovatest/view/home_screen.dart';
+import 'package:azinovatest/controller/auth_controller.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -14,22 +14,10 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController passwordController = TextEditingController();
   final formkey = GlobalKey<FormState>();
 
-  // void login() {
-  //   if (usernameController.text == 'admin' && passwordController.text == 'admin') {
-  //     Navigator.pushReplacement(
-  //       context,
-  //       MaterialPageRoute(builder: (context) => const HomeScreen()),
-  //     );
-  //   } else {
-  //     const SnackBar(
-  //       content: Text("username or password is invalid"),
-  //       duration: Duration(seconds: 2),
-  //     );
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
+    final AuthController authController = AuthController(context: context);
+
     return SafeArea(
         child: Scaffold(
       body: Padding(
@@ -51,11 +39,10 @@ class _LoginScreenState extends State<LoginScreen> {
               TextFormField(
                 controller: usernameController,
                 validator: (value) {
-                  if (value != "admin") {
-                    return "Invalid username";
-                  } else {
-                    return null;
+                  if (value!.isEmpty) {
+                    return 'Enter Username';
                   }
+                  return null;
                 },
                 decoration: const InputDecoration(
                   contentPadding: EdgeInsets.all(14),
@@ -71,11 +58,10 @@ class _LoginScreenState extends State<LoginScreen> {
               TextFormField(
                 controller: passwordController,
                 validator: (value) {
-                  if (value != "admin") {
-                    return "Invalid password";
-                  } else {
-                    return null;
+                  if (value!.isEmpty) {
+                    return 'Enter Password';
                   }
+                  return null;
                 },
                 obscureText: true,
                 decoration: const InputDecoration(
@@ -94,14 +80,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: ElevatedButton(
                   onPressed: () {
                     if (formkey.currentState!.validate()) {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (context) => const HomeScreen()),
-                      );
-                    } else {
-                      const SnackBar(
-                        content: Text("username or password is invalid"),
-                        duration: Duration(seconds: 2),
+                      authController.login(
+                        userName: usernameController.text.trim(),
+                        password: passwordController.text.trim(),
                       );
                     }
                   },
