@@ -11,12 +11,12 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  late Future<List<Item>> itemss;
+  late Future<List<Item>> items;
 
   @override
   void initState() {
     super.initState();
-    itemss = ItemService().fetchItems();
+    items = ItemService().fetchItems();
   }
 
   @override
@@ -40,7 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           children: [
             FutureBuilder<List<Item>>(
-              future: itemss,
+              future: items,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(
@@ -54,19 +54,26 @@ class _HomeScreenState extends State<HomeScreen> {
                         Item item = snapshot.data![index];
                         return Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: ListTile(
-                            leading: CircleAvatar(
-                              radius: 30,
-                              backgroundImage: NetworkImage(item.itemImage),
+                          child: Card(
+                            elevation: 1,
+                            margin: const EdgeInsets.all(2),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: ListTile(
+                                leading: CircleAvatar(
+                                  radius: 30,
+                                  backgroundImage: NetworkImage(item.itemImage),
+                                ),
+                                title: Text(item.itemName),
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => ListDetails(item: item),
+                                      ));
+                                },
+                              ),
                             ),
-                            title: Text(item.itemName),
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ListDetails(item: item),
-                                  ));
-                            },
                           ),
                         );
                       },
